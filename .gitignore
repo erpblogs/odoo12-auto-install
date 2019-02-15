@@ -1,0 +1,12 @@
+# dotfiles
+.*
+!.gitignore
+
+# compiled python files
+*.py[co]
+__pycache__/
+# setup.py egg_info
+
+git-info.conf
+
+opms_ver12

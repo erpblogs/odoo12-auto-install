@@ -1,0 +1,13 @@
+python-docx==0.8.10
+openpyxl==2.6.0
+textile==3.0.3
+python-redmine==2.2.0
+nameparser==1.0.2
+urlparse2==1.1.1
+google-api-python-client==1.7.8
+google-auth-oauthlib==0.2.0
+oauth2client==4.1.3
+pyasn1-modules==0.2.4
+html2text==2018.1.9
+vatnumber==1.2
+xlrd==1.2.0

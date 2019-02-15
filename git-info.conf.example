@@ -1,0 +1,4 @@
+path=git_path
+user=git_user_name
+password=git_password
+branch=git_branch
