@@ -51,16 +51,8 @@ if [ "$GIT_PATH" = "" ] || [ "$GIT_USER" = "" ]  || [ "$GIT_PASSWORD" = "" ]  ||
     exit
 fi
 
+# git path to clone custom addon
 FULL_PATH="https://${GIT_USER}:${GIT_PASSWORD}@${GIT_PATH}"
-echo $FULL_PATH
-
-sudo rm -rf opms_ver12/
-sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH opms_ver12
-
-# custom variable
-OE_CURRENT="./"
-CWD="$(pwd)"
-CUSTOM_ADDONS="$(pwd)/opms_ver12"
 
 ##
 ###  WKHTMLTOPDF download links
@@ -84,6 +76,7 @@ sudo apt-get upgrade -y
 #--------------------------------------------------
 echo -e "\n---- Install PostgreSQL Server ----"
 sudo apt-get install postgresql -y
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
@@ -130,7 +123,6 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
 fi
-sudo rm wkhtmltox-*.deb
 
 echo -e "\n---- Create ODOO system user ----"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
@@ -175,6 +167,10 @@ fi
 
 #quangtv edit
 sudo pip3 install num2words xlwt
+sudo apt-get install nodejs npm -y
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+sudo npm install -g less
+sudo npm install -g less-plugin-clean-css
 
 #Install requirements
 sudo pip3 install -r ./requirements.txt
@@ -182,6 +178,9 @@ sudo pip3 install -r ./requirements.txt
 echo -e "\n---- Create custom module directory ----"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+
+sudo git clone $FULL_PATH $OE_HOME/custom/addons
+sudo git checkout $GIT_BRANCH
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
@@ -197,7 +196,7 @@ sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /e
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
 else
-    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons,${CUSTOM_ADDONS}\n' >> /etc/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
 fi
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
