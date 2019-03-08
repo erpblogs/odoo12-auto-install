@@ -90,10 +90,10 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n--- Installing Python 3 + pip3 --"
 # sudo apt-get install python3.6 python3-pip -y
 #install python 3.6:
-sudo apt-get install software-properties-common
+sudo apt-get install software-properties-common -y
 sudo add-apt-repository ppa:jonathonf/python-3.6 -y
 sudo apt-get update
-sudo apt-get install python3.6 python3.6-dev python3.6-venv -y
+sudo apt-get install python3.6 python3.6-dev python3.6-minimal python3.6-venv -y
 
 wget https://bootstrap.pypa.io/get-pip.py
 python3.6 get-pip.py
@@ -181,6 +181,8 @@ fi
 python3.6 -m pip install num2words ofxparse
 
 echo -e "\n---- Create custom module directory ----"
+sudo rm -rf $OE_HOME/custom #remove if exits
+
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
