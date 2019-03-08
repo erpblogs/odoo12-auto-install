@@ -217,6 +217,7 @@ echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'db_user = ${OE_USER}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
@@ -264,7 +265,7 @@ sudo chown root: /lib/systemd/system/${OE_CONFIG}.service
 
 echo -e "* Start ODOO on Startup"
 sudo systemctl enable odoo-server
-sudo journalctl -u odoo-server
+# sudo journalctl -u odoo-server
 
 echo -e "* Starting Odoo Service"
 sudo su root -c "systemctl stop odoo-server && systemctl start odoo-server"
