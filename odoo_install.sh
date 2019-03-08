@@ -85,12 +85,16 @@ echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 
 #--------------------------------------------------
+echo -e "\n---- Install tool packages ----"
+sudo apt-get install wget git bzr gdebi-core -y
+sudo apt-get install software-properties-common -y
+
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
 # sudo apt-get install python3.6 python3-pip -y
 #install python 3.6:
-sudo apt-get install software-properties-common -y
+
 sudo add-apt-repository ppa:jonathonf/python-3.6 -y
 sudo apt-get update
 sudo apt-get install python3.6 python3.6-dev python3.6-minimal python3.6-venv -y
@@ -98,13 +102,10 @@ sudo apt-get install python3.6 python3.6-dev python3.6-minimal python3.6-venv -y
 wget https://bootstrap.pypa.io/get-pip.py
 sudo python3.6 get-pip.py
 
-echo -e "\n---- Install tool packages ----"
-sudo apt-get install wget git bzr python-pip gdebi-core -y
-
 echo -e "\n---- Install python packages ----"
 sudo apt-get install libxml2-dev libxslt1-dev zlib1g-dev -y
 sudo apt-get install libsasl2-dev libldap2-dev libssl-dev -y
-sudo apt-get install python-pypdf2 python-dateutil python-feedparser python-ldap python-libxslt1 python-lxml python-mako python-openid python-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python-decorator python-requests python-passlib python-pil -y
+sudo apt-get install python3-pypdf2 python3-dateutil python3-feedparser python-ldap python-libxslt1 python3-lxml python3-mako python3-openid python3-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python-decorator python-requests python3-passlib python-pil -y
 sudo python3.6 -m pip install pypdf2 Babel passlib Werkzeug decorator python-dateutil pyyaml psycopg2 psycopg2-binary psutil html2text docutils lxml pillow reportlab ninja2 requests gdata XlsxWriter vobject python-openid pyparsing pydot mock mako Jinja2 ebaysdk feedparser xlwt psycogreen suds-jurko pytz pyusb greenlet xlrd chardet libsass
 
 echo -e "\n---- Install python libraries ----"
@@ -142,6 +143,7 @@ sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' -
 sudo adduser $OE_USER sudo
 
 echo -e "\n---- Create Log directory ----"
+sudo rm /var/log/$OE_USER
 sudo mkdir /var/log/$OE_USER
 sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 
@@ -150,6 +152,9 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 #--------------------------------------------------
 echo -e "\n==== Installing ODOO Server ===="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
+# Install
+sudo python3.6 -m pip install -r $OE_HOME_EXT/requirements.txt
+sudo python3.6 -m pip install -r $OE_HOME_EXT/doc/requirements.txt
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
@@ -177,6 +182,10 @@ if [ $IS_ENTERPRISE = "True" ]; then
     sudo npm install -g less-plugin-clean-css
 fi
 
+sudo apt-get install nodejs npm -y
+sudo npm install -g less -y
+sudo npm install -g less-plugin-clean-css -y
+
 #quangtv edit
 sudo python3.6 -m pip install num2words ofxparse
 
@@ -202,6 +211,7 @@ sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
 
 echo -e "* Create server config file"
 
+sudo rm /etc/${OE_CONFIG}.conf
 sudo touch /etc/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
@@ -225,83 +235,40 @@ sudo chmod 755 $OE_HOME_EXT/start.sh
 # Adding ODOO as a deamon (initscript)
 #--------------------------------------------------
 
-echo -e "* Create init file"
+echo -e "* Create Odoo Service"
 cat <<EOF > ~/$OE_CONFIG
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides: $OE_CONFIG
-# Required-Start: \$remote_fs \$syslog
-# Required-Stop: \$remote_fs \$syslog
-# Should-Start: \$network
-# Should-Stop: \$network
-# Default-Start: 2 3 4 5
-# Default-Stop: 0 1 6
-# Short-Description: Enterprise Business Applications
-# Description: ODOO Business Applications
-### END INIT INFO
-PATH=/bin:/sbin:/usr/bin
-DAEMON=/usr/bin/python3.6 $OE_HOME_EXT/odoo-bin
-NAME=$OE_CONFIG
-DESC=$OE_CONFIG
-# Specify the user name (Default: odoo).
-USER=$OE_USER
-# Specify an alternate config file (Default: /etc/openerp-server.conf).
-CONFIGFILE="/etc/${OE_CONFIG}.conf"
-# pidfile
-PIDFILE=/var/run/\${NAME}.pid
-# Additional options that are passed to the Daemon.
-DAEMON_OPTS="-c \$CONFIGFILE"
-[ -x \$DAEMON ] || exit 0
-[ -f \$CONFIGFILE ] || exit 0
-checkpid() {
-[ -f \$PIDFILE ] || return 1
-pid=\`cat \$PIDFILE\`
-[ -d /proc/\$pid ] && return 0
-return 1
-}
-case "\${1}" in
-start)
-echo -n "Starting \${DESC}: "
-start-stop-daemon --start --quiet --pidfile \$PIDFILE \
---chuid \$USER --background --make-pidfile \
---exec \$DAEMON -- \$DAEMON_OPTS
-echo "\${NAME}."
-;;
-stop)
-echo -n "Stopping \${DESC}: "
-start-stop-daemon --stop --quiet --pidfile \$PIDFILE \
---oknodo
-echo "\${NAME}."
-;;
-restart|force-reload)
-echo -n "Restarting \${DESC}: "
-start-stop-daemon --stop --quiet --pidfile \$PIDFILE \
---oknodo
-sleep 1
-start-stop-daemon --start --quiet --pidfile \$PIDFILE \
---chuid \$USER --background --make-pidfile \
---exec \$DAEMON -- \$DAEMON_OPTS
-echo "\${NAME}."
-;;
-*)
-N=/etc/init.d/\$NAME
-echo "Usage: \$NAME {start|stop|restart|force-reload}" >&2
-exit 1
-;;
-esac
-exit 0
+[Unit]
+Description=Odoo Open Source ERP and CRM
+Requires=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+PermissionsStartOnly=true
+SyslogIdentifier=odoo-server
+User=odoo
+Group=odoo
+ExecStart=/usr/bin/python3.6 $OE_HOME_EXT/odoo-bin --config=/etc/${OE_CONFIG}.conf
+WorkingDirectory=$OE_HOME
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target
 EOF
 
-echo -e "* Security Init File"
-sudo mv ~/$OE_CONFIG /etc/init.d/$OE_CONFIG
-sudo chmod 755 /etc/init.d/$OE_CONFIG
-sudo chown root: /etc/init.d/$OE_CONFIG
+echo -e "* Security Odoo Service File"
+sudo rm /lib/systemd/system/${OE_CONFIG}.service
+sudo mv ~/$OE_CONFIG /lib/systemd/system/${OE_CONFIG}.service
+sudo chmod 755 /lib/systemd/system/${OE_CONFIG}.service
+sudo chown root: /lib/systemd/system/${OE_CONFIG}.service
 
 echo -e "* Start ODOO on Startup"
-sudo update-rc.d $OE_CONFIG defaults
+sudo systemctl enable odoo-server
+sudo journalctl -u odoo-server
 
 echo -e "* Starting Odoo Service"
-sudo su root -c "/etc/init.d/$OE_CONFIG start"
+sudo su root -c "systemctl stop odoo-server && systemctl start odoo-server"
+
 echo "-----------------------------------------------------------"
 echo "Done! The Odoo server is up and running. Specifications:"
 echo "Port: $OE_PORT"
@@ -309,7 +276,8 @@ echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
-echo "Start Odoo service: sudo service $OE_CONFIG start"
-echo "Stop Odoo service: sudo service $OE_CONFIG stop"
-echo "Restart Odoo service: sudo service $OE_CONFIG restart"
+echo "Start Odoo service: sudo systemctl start odoo-server"
+echo "Stop Odoo service: sudo systemctl stop odoo-server"
+echo "Restart Odoo service: sudo systemctl restart odoo-server"
+echo "Odoo service status: sudo systemctl status odoo-server"
 echo "-----------------------------------------------------------"
