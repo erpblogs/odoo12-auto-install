@@ -90,6 +90,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n--- Installing Python 3 + pip3 --"
 # sudo apt-get install python3.6 python3-pip -y
 #install python 3.6:
+sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:jonathonf/python-3.6 -y
 sudo apt-get update
 sudo apt-get install python3.6 python3.6-dev python3.6-venv -y
