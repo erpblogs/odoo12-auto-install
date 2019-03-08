@@ -105,8 +105,7 @@ sudo python3.6 get-pip.py
 echo -e "\n---- Install python packages ----"
 sudo apt-get install libxml2-dev libxslt1-dev zlib1g-dev -y
 sudo apt-get install libsasl2-dev libldap2-dev libssl-dev -y
-sudo apt-get install python3-pypdf2 python3-dateutil python3-feedparser python-ldap python-libxslt1 python3-lxml python3-mako python3-openid python3-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python-decorator python-requests python3-passlib python-pil -y
-sudo python3.6 -m pip install pypdf2 Babel passlib Werkzeug decorator python-dateutil pyyaml psycopg2 psycopg2-binary psutil html2text docutils lxml pillow reportlab ninja2 requests gdata XlsxWriter vobject python-openid pyparsing pydot mock mako Jinja2 ebaysdk feedparser xlwt psycogreen suds-jurko pytz pyusb greenlet xlrd chardet libsass
+sudo apt-get install python3-pypdf2 python3-dateutil python3-feedparser python-ldap python-libxslt1 python3-lxml python3-mako python3-openid python3-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python-decorator python3-requests python3-passlib python3-pil -y
 
 echo -e "\n---- Install python libraries ----"
 # This is for compatibility with Ubuntu 16.04. Will work on 14.04, 15.04 and 16.04
@@ -115,7 +114,7 @@ sudo apt-get install python3-suds
 echo -e "\n--- Install other required packages"
 sudo apt-get install node-clean-css -y
 sudo apt-get install node-less -y
-sudo apt-get install python-gevent -y
+sudo apt-get install python3-gevent -y
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
@@ -187,7 +186,7 @@ sudo npm install -g less -y
 sudo npm install -g less-plugin-clean-css -y
 
 #quangtv edit
-sudo python3.6 -m pip install num2words ofxparse
+sudo python3.6 -m pip install num2words ofxparse Pillow
 
 echo -e "\n---- Create custom module directory ----"
 sudo rm -rf $OE_HOME/custom #remove if exits
@@ -199,6 +198,8 @@ sudo rm -rf $OE_HOME/custom/addons/*
 sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH $OE_HOME/custom/addons/
 
 sudo python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
+
+sudo python3.6 -m pip install lxml==3.6.0
 sudo python3.6 -m pip uninstall docx
 
 #install python-docx
