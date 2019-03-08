@@ -179,20 +179,20 @@ fi
 #quangtv edit
 sudo python3.6 -m pip install num2words ofxparse
 
-#Install requirements
-sudo python3.6 -m pip install -r ./requirements.txt
-sudo python3.6 -m pip uninstall docx
-
-#install python-docx
-sudo git clone https://github.com/python-openxml/python-docx.git
-python3.6 ./python-docx/setup.py install
-
 echo -e "\n---- Create custom module directory ----"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 sudo rm -rf $OE_HOME/custom/addons/*
 sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH $OE_HOME/custom/addons/
+
+sudo python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
+sudo python3.6 -m pip uninstall docx
+
+#install python-docx
+sudo git clone https://github.com/python-openxml/python-docx.git $OE_HOME/python-docx/
+python3.6 $OE_HOME/python-docx/setup.py install
+
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
