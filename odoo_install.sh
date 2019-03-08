@@ -96,7 +96,7 @@ sudo apt-get update
 sudo apt-get install python3.6 python3.6-dev python3.6-minimal python3.6-venv -y
 
 wget https://bootstrap.pypa.io/get-pip.py
-python3.6 get-pip.py
+sudo python3.6 get-pip.py
 
 echo -e "\n---- Install tool packages ----"
 sudo apt-get install wget git bzr python-pip gdebi-core -y
@@ -105,7 +105,7 @@ echo -e "\n---- Install python packages ----"
 sudo apt-get install libxml2-dev libxslt1-dev zlib1g-dev -y
 sudo apt-get install libsasl2-dev libldap2-dev libssl-dev -y
 sudo apt-get install python-pypdf2 python-dateutil python-feedparser python-ldap python-libxslt1 python-lxml python-mako python-openid python-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python-decorator python-requests python-passlib python-pil -y
-python3.6 -m pip install pypdf2 Babel passlib Werkzeug decorator python-dateutil pyyaml psycopg2 psutil html2text docutils lxml pillow reportlab ninja2 requests gdata XlsxWriter vobject python-openid pyparsing pydot mock mako Jinja2 ebaysdk feedparser xlwt psycogreen suds-jurko pytz pyusb greenlet xlrd chardet libsass
+sudo python3.6 -m pip install pypdf2 Babel passlib Werkzeug decorator python-dateutil pyyaml psycopg2 psycopg2-binary psutil html2text docutils lxml pillow reportlab ninja2 requests gdata XlsxWriter vobject python-openid pyparsing pydot mock mako Jinja2 ebaysdk feedparser xlwt psycogreen suds-jurko pytz pyusb greenlet xlrd chardet libsass
 
 echo -e "\n---- Install python libraries ----"
 # This is for compatibility with Ubuntu 16.04. Will work on 14.04, 15.04 and 16.04
@@ -171,14 +171,14 @@ if [ $IS_ENTERPRISE = "True" ]; then
 
     echo -e "\n---- Added Enterprise code under $OE_HOME/enterprise/addons ----"
     echo -e "\n---- Installing Enterprise specific libraries ----"
-    python3.6 -m pip install num2words ofxparse
+    sudo python3.6 -m pip install num2words ofxparse
     sudo apt-get install nodejs npm
     sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
 
 #quangtv edit
-python3.6 -m pip install num2words ofxparse
+sudo python3.6 -m pip install num2words ofxparse
 
 echo -e "\n---- Create custom module directory ----"
 sudo rm -rf $OE_HOME/custom #remove if exits
@@ -189,8 +189,8 @@ sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 sudo rm -rf $OE_HOME/custom/addons/*
 sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH $OE_HOME/custom/addons/
 
-python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
-python3.6 -m pip uninstall docx
+sudo python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
+sudo python3.6 -m pip uninstall docx
 
 #install python-docx
 sudo git clone https://github.com/python-openxml/python-docx.git $OE_HOME/python-docx/
@@ -240,7 +240,7 @@ cat <<EOF > ~/$OE_CONFIG
 # Description: ODOO Business Applications
 ### END INIT INFO
 PATH=/bin:/sbin:/usr/bin
-DAEMON=/usr/local/bin/python3.6 $OE_HOME_EXT/odoo-bin
+DAEMON=/usr/bin/python3.6 $OE_HOME_EXT/odoo-bin
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
 # Specify the user name (Default: odoo).
