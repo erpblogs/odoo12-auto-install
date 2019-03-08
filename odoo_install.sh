@@ -186,8 +186,8 @@ sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 sudo rm -rf $OE_HOME/custom/addons/*
 sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH $OE_HOME/custom/addons/
 
-sudo python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
-sudo python3.6 -m pip uninstall docx
+python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
+python3.6 -m pip uninstall docx
 
 #install python-docx
 sudo git clone https://github.com/python-openxml/python-docx.git $OE_HOME/python-docx/
@@ -215,7 +215,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 
 echo -e "* Create startup file"
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
-sudo su root -c "echo 'sudo -u $OE_USER /usr/local/bin/python3.6 $OE_HOME_EXT/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
+sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
 
 #--------------------------------------------------
@@ -237,7 +237,7 @@ cat <<EOF > ~/$OE_CONFIG
 # Description: ODOO Business Applications
 ### END INIT INFO
 PATH=/bin:/sbin:/usr/bin
-DAEMON=$OE_HOME_EXT/odoo-bin
+DAEMON=/usr/local/bin/python3.6 $OE_HOME_EXT/odoo-bin
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
 # Specify the user name (Default: odoo).
