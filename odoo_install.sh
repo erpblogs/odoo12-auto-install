@@ -200,8 +200,7 @@ sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH $OE_HOME/custom/addons/
 
 sudo python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
 
-# sudo python3.6 -m pip install lxml==3.6.0
-sudo python3.6 -m pip uninstall docx
+sudo python3.6 -m pip install lxml==3.6.0 pypdf2 Babel passlib Werkzeug decorator python-dateutil pyyaml psycopg2 psycopg2-binary psutil html2text docutils pillow reportlab ninja2 requests gdata XlsxWriter vobject python-openid pyparsing pydot mock mako Jinja2 ebaysdk feedparser xlwt psycogreen suds-jurko pytz pyusb greenlet xlrd chardet libsass
 
 #install python-docx
 sudo git clone https://github.com/python-openxml/python-docx.git $OE_HOME/python-docx/
