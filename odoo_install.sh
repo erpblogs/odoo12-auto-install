@@ -105,7 +105,8 @@ sudo python3.6 get-pip.py
 echo -e "\n---- Install python packages ----"
 sudo apt-get install libxml2-dev libxslt1-dev zlib1g-dev -y
 sudo apt-get install libsasl2-dev libldap2-dev libssl-dev -y
-sudo apt-get install python3-pypdf2 python3-dateutil python3-feedparser python-ldap python-libxslt1 python3-lxml python3-mako python3-openid python3-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python-decorator python3-requests python3-passlib python3-pil -y
+
+sudo apt-get install python3-pypdf2 python3-dateutil python3-feedparser python-ldap python-libxslt1 python3-lxml python3-mako python3-openid python3-psycopg2 python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-docutils python-psutil python-mock python-unittest2 python-jinja2 python-pypdf python3-decorator python3-requests python3-passlib python3-pil -y
 
 echo -e "\n---- Install python libraries ----"
 # This is for compatibility with Ubuntu 16.04. Will work on 14.04, 15.04 and 16.04
@@ -199,13 +200,17 @@ sudo git clone --depth 1 --branch $GIT_BRANCH $FULL_PATH $OE_HOME/custom/addons/
 
 sudo python3.6 -m pip install -r $OE_HOME/custom/addons/requirements.txt
 
-sudo python3.6 -m pip install lxml==3.6.0
+# sudo python3.6 -m pip install lxml==3.6.0
 sudo python3.6 -m pip uninstall docx
 
 #install python-docx
 sudo git clone https://github.com/python-openxml/python-docx.git $OE_HOME/python-docx/
-python3.6 $OE_HOME/python-docx/setup.py install
+sudo python3.6 $OE_HOME/python-docx/setup.py install
 
+# Odoo use old pyllow we must reinstall new version.
+sudo python3.6 -m pip uninstall pillow -y
+
+sudo python3.6 -m pip install pypdf2 pyyaml psycopg2-binary html2text pillow ninja2 gdata chardet libsass
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
