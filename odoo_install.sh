@@ -98,16 +98,15 @@ sudo apt-get install python3-gevent -y
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-  echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 12 ----"
-  sudo wget "https://builds.wkhtmltopdf.org/0.12.1.3/wkhtmltox_0.12.1.3-1~bionic_amd64.deb"
-  sudo dpkg -i "wkhtmltox_0.12.1.3-1~bionic_amd64.deb"
-  sudo apt-get install -f
-  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
-  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
-else
-  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-fi
+sudo apt-get remove wkhtmltox -y
+
+echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 12 ----"
+sudo wget "https://builds.wkhtmltopdf.org/0.12.1.3/wkhtmltox_0.12.1.3-1~bionic_amd64.deb"
+sudo dpkg -i "wkhtmltox_0.12.1.3-1~bionic_amd64.deb"
+sudo apt-get install -f -y
+sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+
 sudo rm wkhtmltox-*.deb
 
 echo -e "\n---- Create ODOO system user ----"
@@ -191,9 +190,9 @@ After=network.target postgresql.service
 [Service]
 Type=simple
 PermissionsStartOnly=true
-SyslogIdentifier=odoo-server
-User=odoo
-Group=odoo
+SyslogIdentifier=${OE_CONFIG}
+User=${OE_USER}
+Group=${OE_USER}
 ExecStart=/usr/bin/python3.7 $OE_HOME_EXT/odoo-bin --config=/etc/${OE_CONFIG}.conf
 WorkingDirectory=$OE_HOME
 StandardOutput=journal+console
@@ -209,11 +208,12 @@ sudo chmod 755 /lib/systemd/system/${OE_CONFIG}.service
 sudo chown root: /lib/systemd/system/${OE_CONFIG}.service
 
 echo -e "* Start ODOO on Startup"
-sudo systemctl enable odoo-server
-# sudo journalctl -u odoo-server
+sudo systemctl daemon-reload
+sudo systemctl enable ${OE_CONFIG}
+# sudo journalctl -u ${OE_CONFIG}
 
 echo -e "* Starting Odoo Service"
-sudo su root -c "systemctl stop odoo-server && systemctl start odoo-server"
+sudo su root -c "systemctl stop ${OE_CONFIG} && systemctl start ${OE_CONFIG}"
 
 echo "-----------------------------------------------------------"
 echo "Done! The Odoo server is up and running. Specifications:"
@@ -222,8 +222,8 @@ echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
-echo "Start Odoo service: sudo systemctl start odoo-server"
-echo "Stop Odoo service: sudo systemctl stop odoo-server"
-echo "Restart Odoo service: sudo systemctl restart odoo-server"
-echo "Odoo service status: sudo systemctl status odoo-server"
+echo "Start Odoo service: sudo systemctl start ${OE_CONFIG}"
+echo "Stop Odoo service: sudo systemctl stop ${OE_CONFIG}"
+echo "Restart Odoo service: sudo systemctl restart ${OE_CONFIG}"
+echo "Odoo service status: sudo systemctl status ${OE_CONFIG}"
 echo "-----------------------------------------------------------"
