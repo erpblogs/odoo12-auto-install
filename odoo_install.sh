@@ -14,7 +14,7 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="odoo12"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
@@ -71,6 +71,11 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 #--------------------------------------------------
+echo -e "\n---- Install tool packages ----"
+sudo apt-get install wget git bzr gdebi-core -y
+sudo apt-get install software-properties-common -y
+
+#--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n---- Install PostgreSQL Server ----"
@@ -83,11 +88,6 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
-
-#--------------------------------------------------
-echo -e "\n---- Install tool packages ----"
-sudo apt-get install wget git bzr gdebi-core -y
-sudo apt-get install software-properties-common -y
 
 # Install Dependencies
 #--------------------------------------------------
