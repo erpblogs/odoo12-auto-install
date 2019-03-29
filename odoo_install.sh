@@ -107,7 +107,7 @@ sudo apt-get install -f -y
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
 sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 
-sudo rm wkhtmltox-*.deb
+sudo rm wkhtmltox*.deb
 
 echo -e "\n---- Create ODOO system user ----"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
