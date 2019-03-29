@@ -179,7 +179,7 @@ fi
 sudo apt-get install nodejs npm -y
 sudo npm install -g less -y
 sudo npm install -g less-plugin-clean-css -y
-
+sudo ln -s /usr/bin/nodejs /usr/bin/node
 #quangtv edit
 sudo python3.6 -m pip install num2words ofxparse Pillow
 
@@ -204,6 +204,7 @@ sudo python3.6 $OE_HOME/python-docx/setup.py install
 sudo python3.6 -m pip uninstall pillow -y
 
 sudo python3.6 -m pip install pypdf2 pyyaml psycopg2-binary html2text pillow ninja2 gdata chardet libsass
+sudo python3.6 -m pip install phonenumbers
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
