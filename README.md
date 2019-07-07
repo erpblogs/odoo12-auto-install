@@ -1,4 +1,4 @@
-# odoo12-auto-install
+# odoo12-auto-install for ubuntu server 16.04 with out python 3.6
 
 # create git-info.conf file to config your custom addons source
 path=git.path (remove http:\\ or https:\\)
